@@ -1,0 +1,670 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMW · Placer de Conducir</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script defer src="script.js"></script>
+</head>
+<body>
+    <canvas id="bgParticles"></canvas>
+
+    <!-- NAV -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <svg viewBox="0 0 100 100" aria-hidden="true">
+                    <circle cx="50" cy="50" r="48" fill="#000"/>
+                    <circle cx="50" cy="50" r="48" fill="none" stroke="#c0c0c0" stroke-width="0.8"/>
+                    <circle cx="50" cy="50" r="29" fill="#fff"/>
+                    <circle cx="50" cy="50" r="29" fill="none" stroke="#c0c0c0" stroke-width="0.4"/>
+                    <path d="M 50 21 A 29 29 0 0 0 21 50 L 50 50 Z" fill="#0066b1"/>
+                    <path d="M 50 79 A 29 29 0 0 0 79 50 L 50 50 Z" fill="#0066b1"/>
+                    <text x="50" y="67" font-size="14" font-weight="700" fill="#c0c0c0" text-anchor="middle" font-family="'Helvetica Neue',Helvetica,Arial,sans-serif">BMW</text>
+                </svg>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#showcase">Modelos</a></li>
+                <li><a href="#timeline">Historia</a></li>
+                <li><a href="#features">Tecnología</a></li>
+                <li><a href="#specs">Especificaciones</a></li>
+                <li><a href="#colors">Acabados</a></li>
+                <li><a href="#mosaic">Galería</a></li>
+                <li><a href="#contact">Contacto</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main id="mainContent">
+
+    <!-- HERO - Full viewport inmersivo con video -->
+    <section class="hero" id="hero">
+        <div class="hero-video-container">
+            <video class="hero-video" id="heroVideo" playsinline preload="auto"></video>
+            <div class="hero-video-transition" id="videoTransition"></div>
+            <div class="hero-video-overlay"></div>
+            <div class="hero-video-gradient"></div>
+        </div>
+        <button class="hero-volume-btn" id="volumeBtn" aria-label="Toggle volume">
+            <i class="fas fa-volume-up"></i>
+        </button>
+        <div class="hero-content">
+            <span class="hero-eyebrow">Bayerische Motoren Werke</span>
+            <h1 class="hero-title">
+                <span class="hero-title-line">El Placer</span>
+                <span class="hero-title-line hero-title-line--accent">de Conducir<span class="hero-glitter-ring"></span></span>
+            </h1>
+            <p class="hero-description">Desde 1916, creamos máquinas que fusionan ingeniería de precisión, diseño emocional y tecnología pionera.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="scrollToSection('specs')">Explorar Modelos</button>
+                <button class="btn btn-secondary" onclick="openModal('contactModal')">Solicitar Información</button>
+            </div>
+        </div>
+        <div class="hero-scroll">
+            <span>Descubre</span>
+            <div class="hero-scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- MARQUEE - Strip infinito de modelos -->
+    <section class="marquee">
+        <div class="marquee-track">
+            <span>M4 Competition · M5 CS · i8 · Serie 3 · X5 · i4 · M3 · Serie 7 · Z4 · XM · Serie 5 · iX ·</span>
+            <span>M4 Competition · M5 CS · i8 · Serie 3 · X5 · i4 · M3 · Serie 7 · Z4 · XM · Serie 5 · iX ·</span>
+        </div>
+    </section>
+
+    <!-- NÚMEROS - BMW en cifras -->
+    <section class="numbers">
+        <div class="numbers-grid">
+            <div class="number-item">
+                <span class="number-value">1916</span>
+                <span class="number-label">Fundación</span>
+            </div>
+            <div class="number-item">
+                <span class="number-value">15M+</span>
+                <span class="number-label">Serie 3 vendidos</span>
+            </div>
+            <div class="number-item">
+                <span class="number-value">2.5M</span>
+                <span class="number-label">Vehículos / año</span>
+            </div>
+            <div class="number-item">
+                <span class="number-value">30+</span>
+                <span class="number-label">Plantas globales</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- TIMELINE - Horizontal scroll -->
+    <section id="timeline" class="timeline-section">
+        <div class="timeline-header">
+            <span class="section-eyebrow">1916 — 2026</span>
+            <h2>Más de un Siglo</h2>
+        </div>
+        <div class="timeline-scroll">
+            <div class="timeline-track">
+                <div class="timeline-card">
+                    <div class="timeline-card-year">1916</div>
+                    <div class="timeline-card-content">
+                        <h3>Fundación</h3>
+                        <p>Nace Bayerische Motoren Werke en Múnich. Inicialmente fabricante de motores de aviación.</p>
+                    </div>
+                </div>
+                <div class="timeline-card">
+                    <div class="timeline-card-year">1923</div>
+                    <div class="timeline-card-content">
+                        <h3>Primera Moto BMW</h3>
+                        <p>Lanzamiento de la BMW R32, primera motocicleta con motor bóxer.</p>
+                    </div>
+                </div>
+                <div class="timeline-card">
+                    <div class="timeline-card-year">1968</div>
+                    <div class="timeline-card-content">
+                        <h3>Serie 3</h3>
+                        <p>Nace la Serie 3 (E21), el modelo más exitoso de la marca con más de 15M de unidades.</p>
+                    </div>
+                </div>
+                <div class="timeline-card">
+                    <div class="timeline-card-year">1972</div>
+                    <div class="timeline-card-content">
+                        <h3>Nace BMW M</h3>
+                        <p>Fundación de BMW Motorsport GmbH. Llega el legendario 3.0 CSL "Batmobile".</p>
+                    </div>
+                </div>
+                <div class="timeline-card">
+                    <div class="timeline-card-year">1999</div>
+                    <div class="timeline-card-content">
+                        <h3>Serie X</h3>
+                        <p>BMW X5 crea el segmento SAV. Primer BMW con tracción integral xDrive.</p>
+                    </div>
+                </div>
+                <div class="timeline-card">
+                    <div class="timeline-card-year">2013</div>
+                    <div class="timeline-card-content">
+                        <h3>BMW i</h3>
+                        <p>Lanzamiento del i3 eléctrico y el i8 híbrido. Revolución en materiales CFRP.</p>
+                    </div>
+                </div>
+                <div class="timeline-card">
+                    <div class="timeline-card-year">2025</div>
+                    <div class="timeline-card-content">
+                        <h3>Neue Klasse</h3>
+                        <p>Nueva generación eléctrica con arquitectura nativa EV y diseño minimalista radical.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="timeline-fade timeline-fade--left"></div>
+            <div class="timeline-fade timeline-fade--right"></div>
+        </div>
+    </section>
+
+    <!-- SHOWCASE - Modelos destacados con videos oficiales -->
+    <section id="showcase" class="showcase">
+        <div class="showcase-header">
+            <span class="section-eyebrow">Modelos</span>
+            <h2>Descubre la Gama</h2>
+        </div>
+
+        <div class="showcase-block">
+            <div class="showcase-image">
+                <video class="showcase-video" src="videos/showcase_m4.mp4" autoplay loop muted playsinline preload="auto"></video>
+                <div class="showcase-image-accent"></div>
+            </div>
+            <div class="showcase-content">
+                <span class="showcase-tag">M Performance</span>
+                <h3>M4 Competition</h3>
+                <div class="showcase-stats">
+                    <div class="showcase-stat">
+                        <span class="showcase-stat-value">503</span>
+                        <span class="showcase-stat-unit">hp</span>
+                    </div>
+                    <div class="showcase-stat-divider"></div>
+                    <div class="showcase-stat">
+                        <span class="showcase-stat-value">3.5</span>
+                        <span class="showcase-stat-unit">s</span>
+                    </div>
+                    <div class="showcase-stat-divider"></div>
+                    <div class="showcase-stat">
+                        <span class="showcase-stat-value">280</span>
+                        <span class="showcase-stat-unit">km/h</span>
+                    </div>
+                </div>
+                <p>El deportivo definitivo. Motor R6 TwinPower Turbo de 503 hp, tracción trasera y un chasis diseñado para dominar cada curva con precisión milimétrica.</p>
+                <button class="btn btn-primary">Configurar <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+
+        <div class="showcase-block showcase-block--reverse">
+            <div class="showcase-image">
+                <video class="showcase-video" src="videos/showcase_i8.mp4" autoplay loop muted playsinline preload="auto"></video>
+                <div class="showcase-image-accent"></div>
+            </div>
+            <div class="showcase-content">
+                <span class="showcase-tag">BMW i</span>
+                <h3>i8 Coupé</h3>
+                <div class="showcase-stats">
+                    <div class="showcase-stat">
+                        <span class="showcase-stat-value">374</span>
+                        <span class="showcase-stat-unit">hp</span>
+                    </div>
+                    <div class="showcase-stat-divider"></div>
+                    <div class="showcase-stat">
+                        <span class="showcase-stat-value">4.4</span>
+                        <span class="showcase-stat-unit">s</span>
+                    </div>
+                    <div class="showcase-stat-divider"></div>
+                    <div class="showcase-stat">
+                        <span class="showcase-stat-value">2.1</span>
+                        <span class="showcase-stat-unit">L/100km</span>
+                    </div>
+                </div>
+                <p>Revolución híbrida con carrocería de CFRP y puertas de ala de gaviota. Un icono del diseño que marcó el camino hacia la electrificación deportiva.</p>
+                <button class="btn btn-primary">Configurar <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+
+        <div class="showcase-block">
+            <div class="showcase-image">
+                <video class="showcase-video" src="videos/showcase_m3.mp4" autoplay loop muted playsinline preload="auto"></video>
+                <div class="showcase-image-accent"></div>
+            </div>
+            <div class="showcase-content">
+                <span class="showcase-tag">M Performance</span>
+                <h3>M3 Competition</h3>
+                <div class="showcase-stats">
+                    <div class="showcase-stat">
+                        <span class="showcase-stat-value">510</span>
+                        <span class="showcase-stat-unit">hp</span>
+                    </div>
+                    <div class="showcase-stat-divider"></div>
+                    <div class="showcase-stat">
+                        <span class="showcase-stat-value">3.8</span>
+                        <span class="showcase-stat-unit">s</span>
+                    </div>
+                    <div class="showcase-stat-divider"></div>
+                    <div class="showcase-stat">
+                        <span class="showcase-stat-value">280</span>
+                        <span class="showcase-stat-unit">km/h</span>
+                    </div>
+                </div>
+                <p>La berlina deportiva por excelencia. Motor R6 TwinPower Turbo de 510 hp, tracción total M xDrive y la experiencia de conducción más emocionante de su categoría.</p>
+                <button class="btn btn-primary">Configurar <i class="fas fa-arrow-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES - Tecnología -->
+    <section id="features" class="features">
+        <div class="features-header">
+            <span class="section-eyebrow">Innovación</span>
+            <h2>Tecnología BMW</h2>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-card-icon"><i class="fas fa-arrows-rotate"></i></div>
+                <h3>xDrive</h3>
+                <p>Tracción total inteligente. Distribución variable 0-100% entre ejes en milisegundos.</p>
+                <ul class="feature-list">
+                    <li>Sensores de ángulo y aceleración</li>
+                    <li>Integración con DSC</li>
+                    <li>Disponible en X, 3, 5 y M</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card-icon"><i class="fas fa-microchip"></i></div>
+                <h3>EfficientDynamics</h3>
+                <p>Eficiencia sin sacrificar prestaciones. Recuperación de energía y aerodinámica activa.</p>
+                <ul class="feature-list">
+                    <li>BRAKE ENERGY REGENERATION</li>
+                    <li>Active Air Stream</li>
+                    <li>ECO PRO asistencia</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card-icon"><i class="fas fa-display"></i></div>
+                <h3>BMW iDrive</h3>
+                <p>Sistema de infoentretenimiento con pantalla curva, control háptico y asistente de voz.</p>
+                <ul class="feature-list">
+                    <li>BMW Curved Display</li>
+                    <li>iDrive controller háptico</li>
+                    <li>Apple CarPlay inalámbrico</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <div class="feature-card-icon"><i class="fas fa-car-battery"></i></div>
+                <h3>BMW eDrive</h3>
+                <p>Liderando la transición eléctrica con baterías de alta densidad y motores de última gen.</p>
+                <ul class="feature-list">
+                    <li>i4: Gran Coupé 590 km</li>
+                    <li>iX: SAV 630 km</li>
+                    <li>i7: berlina 100% eléctrica</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- SPEC BANNER - Full width highlight -->
+    <section class="spec-banner">
+        <div class="spec-banner-bg"></div>
+        <div class="spec-banner-content">
+            <div class="spec-banner-item">
+                <span class="spec-banner-value">635</span>
+                <span class="spec-banner-unit">hp</span>
+                <span class="spec-banner-label">M5 CS · V8 TwinPower</span>
+            </div>
+            <div class="spec-banner-divider"></div>
+            <div class="spec-banner-item">
+                <span class="spec-banner-value">3.0</span>
+                <span class="spec-banner-unit">s</span>
+                <span class="spec-banner-label">0-100 km/h · M5 CS</span>
+            </div>
+            <div class="spec-banner-divider"></div>
+            <div class="spec-banner-item">
+                <span class="spec-banner-value">748</span>
+                <span class="spec-banner-unit">hp</span>
+                <span class="spec-banner-label">XM Label Red · PHEV V8</span>
+            </div>
+            <div class="spec-banner-divider"></div>
+            <div class="spec-banner-item">
+                <span class="spec-banner-value">630</span>
+                <span class="spec-banner-unit">km</span>
+                <span class="spec-banner-label">Autonomía iX · Eléctrico</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ESPECIFICACIONES -->
+    <section id="specs" class="specifications">
+        <div class="specs-header">
+            <span class="section-eyebrow">Diversidad en cifras</span>
+            <h2>Modelos Destacados</h2>
+        </div>
+        <div class="specs-grid">
+            <div class="spec-card">
+                <div class="spec-icon"><i class="fas fa-car"></i></div>
+                <h4>M3 Competition</h4>
+                <p class="spec-value">503 hp</p>
+                <p class="spec-detail">R6 TwinPower · 0-100 en 3.5s</p>
+            </div>
+            <div class="spec-card">
+                <div class="spec-icon"><i class="fas fa-bolt"></i></div>
+                <h4>i4 M50</h4>
+                <p class="spec-value">536 hp</p>
+                <p class="spec-detail">Eléctrico · 510 km · AWD</p>
+            </div>
+            <div class="spec-card">
+                <div class="spec-icon"><i class="fas fa-road"></i></div>
+                <h4>X5 M60i</h4>
+                <p class="spec-value">530 hp</p>
+                <p class="spec-detail">V8 TwinPower · 0-100 en 4.3s</p>
+            </div>
+            <div class="spec-card">
+                <div class="spec-icon"><i class="fas fa-crown"></i></div>
+                <h4>Serie 7 i7</h4>
+                <p class="spec-value">544 hp</p>
+                <p class="spec-detail">Eléctrica · 625 km · Lujo</p>
+            </div>
+            <div class="spec-card">
+                <div class="spec-icon"><i class="fas fa-flag-checkered"></i></div>
+                <h4>i8 Coupé</h4>
+                <p class="spec-value">374 hp</p>
+                <p class="spec-detail">Híbrido · 0-100 en 4.4s</p>
+            </div>
+            <div class="spec-card">
+                <div class="spec-icon"><i class="fas fa-leaf"></i></div>
+                <h4>i3</h4>
+                <p class="spec-value">170 hp</p>
+                <p class="spec-detail">Eléctrico urbano · CFRP</p>
+            </div>
+            <div class="spec-card">
+                <div class="spec-icon"><i class="fas fa-trophy"></i></div>
+                <h4>M5 CS</h4>
+                <p class="spec-value">635 hp</p>
+                <p class="spec-detail">V8 TwinPower · 0-100 en 3.0s</p>
+            </div>
+            <div class="spec-card">
+                <div class="spec-icon"><i class="fas fa-bullseye"></i></div>
+                <h4>Serie 3 330i</h4>
+                <p class="spec-value">258 hp</p>
+                <p class="spec-detail">Berlina · R4 TwinPower</p>
+            </div>
+            <div class="spec-card">
+                <div class="spec-icon"><i class="fas fa-arrow-up"></i></div>
+                <h4>XM Label Red</h4>
+                <p class="spec-value">748 hp</p>
+                <p class="spec-detail">PHEV V8 · Récord BMW</p>
+            </div>
+            <div class="spec-card">
+                <div class="spec-icon"><i class="fas fa-wind"></i></div>
+                <h4>Z4 M40i</h4>
+                <p class="spec-value">340 hp</p>
+                <p class="spec-detail">Roadster · R6 · Capota lona</p>
+            </div>
+            <div class="spec-card">
+                <div class="spec-icon"><i class="fas fa-microchip"></i></div>
+                <h4>iX M60</h4>
+                <p class="spec-value">610 hp</p>
+                <p class="spec-detail">SAV eléctrico · 560 km</p>
+            </div>
+            <div class="spec-card">
+                <div class="spec-icon"><i class="fas fa-chart-line"></i></div>
+                <h4>Serie 5 540i</h4>
+                <p class="spec-value">376 hp</p>
+                <p class="spec-detail">Berlina ejecutiva · Mild Hybrid</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- COLORES / CAROUSEL -->
+    <section id="colors" class="colors-section">
+        <div class="colors-header">
+            <span class="section-eyebrow">Personalización</span>
+            <h2>Acabados BMW Individual</h2>
+        </div>
+        <div class="colors-carousel-wrapper">
+            <button class="carousel-arrow carousel-arrow--left" id="carouselPrev" aria-label="Anterior">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="colors-carousel" id="colorsCarousel">
+                <div class="color-card">
+                    <div class="color-swatch" style="--swatch: #0066b1; background: var(--swatch);"></div>
+                    <h3>Tanzanite Blue</h3>
+                    <p>Azul profundo metalizado con reflejos púrpura.</p>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="--swatch: #e8e8e8; background: var(--swatch); border: 1px solid rgba(0,0,0,0.06);"></div>
+                    <h3>Alpine White</h3>
+                    <p>Blanco clásico sólido. El color más icónico.</p>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="--swatch: #8b0a0a; background: var(--swatch);"></div>
+                    <h3>Frozen Red</h3>
+                    <p>Rojo congelado mate. Agresivo y sofisticado.</p>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="--swatch: #1a1a1a; background: var(--swatch);"></div>
+                    <h3>Carbon Black</h3>
+                    <p>Negro con reflejos azulados. Elegancia pura.</p>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="--swatch: #708090; background: var(--swatch);"></div>
+                    <h3>Donington Grey</h3>
+                    <p>Gris metalizado. Característico de modelos M.</p>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="--swatch: #2d4b2e; background: var(--swatch);"></div>
+                    <h3>Frozen Deep Green</h3>
+                    <p>Verde profundo mate. Exclusividad Individual.</p>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="--swatch: #4a2c17; background: var(--swatch);"></div>
+                    <h3>Aventurin Red</h3>
+                    <p>Rojo intenso con matices cobrizos.</p>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="--swatch: #3b3b3b; background: var(--swatch);"></div>
+                    <h3>Frozen Grey</h3>
+                    <p>Gris congelado mate. Agresivo y moderno.</p>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="--swatch: #0d3b3b; background: var(--swatch);"></div>
+                    <h3>Frozen Dark Blue</h3>
+                    <p>Azul oscuro congelado. Sofisticación extrema.</p>
+                </div>
+                <div class="color-card">
+                    <div class="color-swatch" style="--swatch: #8c8c78; background: var(--swatch);"></div>
+                    <h3>Dravit Grey</h3>
+                    <p>Gris bronce con reflejos dorados.</p>
+                </div>
+            </div>
+            <button class="carousel-arrow carousel-arrow--right" id="carouselNext" aria-label="Siguiente">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        <p class="colors-note">Más de 150 opciones disponibles en el programa BMW Individual.</p>
+    </section>
+
+    <!-- MOSAIC - Asymmetrical image grid -->
+    <section id="mosaic" class="mosaic-section">
+        <div class="mosaic-header">
+            <span class="section-eyebrow">Iconos</span>
+            <h2>Ingeniería en Imágenes</h2>
+        </div>
+        <div class="mosaic-grid">
+            <div class="mosaic-item mosaic-item--a">
+                <img src="https://images.unsplash.com/photo-1558486137-0634dd211be0?w=800&q=85" alt="BMW Serie 3" loading="lazy">
+                <div class="mosaic-overlay">
+                    <h3>Serie 3</h3>
+                    <p>La berlina deportiva · +15M vendidos</p>
+                </div>
+            </div>
+            <div class="mosaic-item mosaic-item--b">
+                <img src="https://images.unsplash.com/photo-1750019489338-9767392b9ffd?w=800&q=85" alt="BMW M5 CS" loading="lazy">
+                <div class="mosaic-overlay">
+                    <h3>M5 CS</h3>
+                    <p>635 hp · El más potente</p>
+                </div>
+            </div>
+            <div class="mosaic-item mosaic-item--c">
+                <img src="https://images.unsplash.com/photo-1652515636740-78d2fd9169cf?w=800&q=85" alt="BMW carretera" loading="lazy">
+                <div class="mosaic-overlay">
+                    <h3>Carretera</h3>
+                    <p>El placer de conducir</p>
+                </div>
+            </div>
+            <div class="mosaic-item mosaic-item--d">
+                <img src="https://images.unsplash.com/photo-1641993225027-d56adb2b5b2d?w=800&q=85" alt="BMW X5" loading="lazy">
+                <div class="mosaic-overlay">
+                    <h3>X5</h3>
+                    <p>Pionero SAV · xDrive</p>
+                </div>
+            </div>
+            <div class="mosaic-item mosaic-item--e">
+                <img src="https://images.unsplash.com/photo-1667551181687-e3eb9babf037?w=800&q=85" alt="BMW i8" loading="lazy">
+                <div class="mosaic-overlay">
+                    <h3>i8</h3>
+                    <p>Híbrido · Puertas ala de gaviota</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GALERÍA - Full bleed -->
+    <section id="gallery" class="gallery-section">
+        <div class="gallery-header">
+            <span class="section-eyebrow">Diseño</span>
+            <h2>Galería BMW</h2>
+        </div>
+        <div class="gallery-grid gallery-grid--bleed">
+            <div class="gallery-item gallery-item-wide">
+                <img src="https://images.unsplash.com/photo-1747868329766-3f63cb760bb0?w=1400&q=85" alt="BMW M4 frontal" loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1652515636740-78d2fd9169cf?w=900&q=85" alt="BMW en movimiento" loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=900&q=85" alt="BMW perfil" loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1745585745914-871eb000a19f?w=900&q=85" alt="BMW M5 trasera" loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="https://images.unsplash.com/photo-1761264889641-1f24d16ad9b8?w=900&q=85" alt="BMW interior" loading="lazy">
+            </div>
+            <div class="gallery-item gallery-item-wide">
+                <img src="https://images.unsplash.com/photo-1776531646374-cf91560be100?w=1400&q=85" alt="BMW M5 frontal" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACTO -->
+    <section id="contact" class="contact">
+        <div class="contact-header">
+            <span class="section-eyebrow">Conéctate</span>
+            <h2>Contacto</h2>
+        </div>
+        <div class="contact-wrapper">
+            <form class="contact-form" onsubmit="submitForm(event)">
+                <input type="text" placeholder="Nombre completo" required>
+                <input type="email" placeholder="Tu correo electrónico" required>
+                <input type="tel" placeholder="Número de teléfono" required>
+                <textarea placeholder="Mensaje (opcional)" rows="3"></textarea>
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
+            <div class="contact-info">
+                <div class="info-block">
+                    <h4>Visítanos</h4>
+                    <p>Gran Vía, 28<br>Madrid, España</p>
+                </div>
+                <div class="info-block">
+                    <h4>Llamanos</h4>
+                    <p>+34 911 234 567</p>
+                </div>
+                <div class="info-block">
+                    <h4>Horario</h4>
+                    <p>Lunes - Viernes: 9:00-18:00<br>Sábado: 10:00-14:00</p>
+                </div>
+                <div class="info-block">
+                    <h4>Oficial</h4>
+                    <p><a href="https://www.bmw.com" target="_blank">bmw.com</a> · <a href="https://www.bmw.es" target="_blank">bmw.es</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODAL -->
+    <div id="contactModal" class="modal" onclick="closeModal('contactModal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close" onclick="closeModal('contactModal')">&times;</span>
+            <h2>Solicitar Información</h2>
+            <form onsubmit="submitTestDrive(event)">
+                <input type="text" placeholder="Tu nombre" required>
+                <input type="email" placeholder="Tu correo" required>
+                <input type="date" required>
+                <select required>
+                    <option value="">Elige una hora</option>
+                    <option value="09:00">09:00 AM</option>
+                    <option value="11:00">11:00 AM</option>
+                    <option value="14:00">14:00 PM</option>
+                    <option value="16:00">16:00 PM</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Confirmar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Modelos</h4>
+                    <ul>
+                        <li><a href="#">Serie M</a></li>
+                        <li><a href="#">BMW i</a></li>
+                        <li><a href="#">Serie X</a></li>
+                        <li><a href="#">Berlinas</a></li>
+                        <li><a href="#">Roadsters</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Servicios</h4>
+                    <ul>
+                        <li><a href="#">Configurador</a></li>
+                        <li><a href="#">Prueba</a></li>
+                        <li><a href="#">Financiacion</a></li>
+                        <li><a href="#">Service</a></li>
+                        <li><a href="#">Recambios</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>BMW Group</h4>
+                    <ul>
+                        <li><a href="#">MINI</a></li>
+                        <li><a href="#">Rolls-Royce</a></li>
+                        <li><a href="#">BMW Motorrad</a></li>
+                        <li><a href="#">Innovacion</a></li>
+                        <li><a href="#">Sostenibilidad</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Soporte</h4>
+                    <ul>
+                        <li><a href="#">Contacto</a></li>
+                        <li><a href="#">Concesionarios</a></li>
+                        <li><a href="#">Preguntas Frecuentes</a></li>
+                        <li><a href="#">Politica de Privacidad</a></li>
+                        <li><a href="#">Aviso Legal</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <p class="footer-bottom">&copy; 2026 BMW · El Placer de Conducir · Trabajo Universitario</p>
+        </div>
+    </footer>
+    </main>
+</body>
+</html>
