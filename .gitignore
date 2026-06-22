@@ -14,3 +14,12 @@ Desktop.ini
 __pycache__/
 *.py[cod]
 *.pyo
+
+# Binarios / ejecutables
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Videos grandes (gestionar con LFS)
+# videos/*.mp4
