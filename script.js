@@ -51,6 +51,10 @@
         isTransitioning = true;
         clearPlaybackTimer();
 
+        // Sync muted state from actual video element (splash may have unmuted it)
+        isMuted = videoEl.muted;
+        updateVolumeIcon();
+
         if (transitionEl) transitionEl.classList.add('active');
 
         setTimeout(function() {
@@ -62,7 +66,6 @@
                 if (isTransitioning) {
                     if (transitionEl) transitionEl.classList.remove('active');
                     videoEl.classList.add('visible');
-                    videoEl.muted = true;
                     videoEl.play().catch(function() {});
                     currentIndex = idx;
                     isTransitioning = false;
@@ -78,6 +81,8 @@
                 videoEl.muted = isMuted;
                 videoEl.play().catch(function() {
                     videoEl.muted = true;
+                    isMuted = true;
+                    updateVolumeIcon();
                     videoEl.play().catch(function() {});
                 });
                 currentIndex = idx;
