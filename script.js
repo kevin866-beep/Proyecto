@@ -21,6 +21,7 @@
     var currentIndex = 0;
     var isTransitioning = false;
     var playbackTimer = null;
+    var started = false;
 
     function pickNext() {
         return (currentIndex + 1) % videoFiles.length;
@@ -106,14 +107,25 @@
         }, 60000);
     }
 
-    // The first video autoplays via HTML attributes (muted).
-    // Show it, set currentIndex, and start the rotation timer.
-    // Sound will be unlocked when user dismisses the splash screen.
-    videoEl.addEventListener('playing', function onFirstPlay() {
-        videoEl.removeEventListener('playing', onFirstPlay);
+    function showFirstVideo() {
+        if (started) return;
+        started = true;
         videoEl.classList.add('visible');
         currentIndex = 0;
         startPlaybackTimer();
+    }
+
+    // When the video actually starts playing (from HTML autoplay or JS .play())
+    videoEl.addEventListener('playing', function onFirstPlay() {
+        videoEl.removeEventListener('playing', onFirstPlay);
+        showFirstVideo();
+    });
+
+    // Explicitly try to start playback (belt and suspenders for HTML autoplay)
+    videoEl.play().then(showFirstVideo).catch(function() {
+        // Autoplay blocked by browser (even muted).
+        // showFirstVideo() will be called when the 'playing' event fires,
+        // or when the user dismisses the splash screen.
     });
 
     // Rotate to next when video ends
@@ -150,11 +162,12 @@
             splash.style.display = 'none';
         }, 600);
 
-        // Now we have user gesture, unmute the video
+        // Now we have user gesture, unmute and show the video
         var videoEl = document.getElementById('heroVideo');
         var volumeBtn = document.getElementById('volumeBtn');
         if (videoEl) {
             videoEl.muted = false;
+            videoEl.classList.add('visible');
             videoEl.play().catch(function() {});
         }
         if (volumeBtn) {
