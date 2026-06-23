@@ -1332,15 +1332,6 @@ body {
 .carousel-arrow--left { margin-right: 0.75rem; }
 .carousel-arrow--right { margin-left: 0.75rem; }
 
-.color-card {
-    background: var(--bg-section);
-    border-radius: var(--radius-card);
-    padding: 1.5rem;
-    text-align: center;
-    border: 1px solid var(--border-subtle);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
 .color-card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-sm);
@@ -1863,12 +1854,6 @@ body {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
-}
-
-@keyframes sparkleTwinkle {
-    0% { opacity: 0.4; }
-    50% { opacity: 1; }
-    100% { opacity: 0.4; }
 }
 
 /* ===== DECORATIVE GLITTER RING ===== */

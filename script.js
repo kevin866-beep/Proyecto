@@ -285,7 +285,7 @@ window.addEventListener('scroll', function() {
     let current = '';
     sections.forEach(function(s) {
         const top = s.offsetTop;
-        if (pageYOffset >= top - 200) current = s.getAttribute('id');
+        if (window.scrollY >= top - 200) current = s.getAttribute('id');
     });
     links.forEach(function(l) {
         l.style.color = l.getAttribute('href') === '#' + current ? 'var(--primary)' : '';
