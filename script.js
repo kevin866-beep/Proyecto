@@ -15,25 +15,12 @@
     var videoEl = document.getElementById('heroVideo');
     var volumeBtn = document.getElementById('volumeBtn');
     var transitionEl = document.getElementById('videoTransition');
-    var heroContainer = document.querySelector('.hero-video-container');
     if (!videoEl || !volumeBtn || videoFiles.length === 0) return;
 
     var isMuted = true;
-    var currentIndex = -1;
+    var currentIndex = 0;
     var isTransitioning = false;
     var playbackTimer = null;
-    var soundUnlocked = false;
-
-    function preloadAll() {
-        videoFiles.forEach(function(src) {
-            var link = document.createElement('link');
-            link.rel = 'preload';
-            link.as = 'video';
-            link.href = src;
-            document.head.appendChild(link);
-        });
-    }
-    preloadAll();
 
     function pickNext() {
         return (currentIndex + 1) % videoFiles.length;
@@ -46,10 +33,6 @@
         }
     }
 
-    function advanceToNext() {
-        playVideo(pickNext());
-    }
-
     function updateVolumeIcon() {
         volumeBtn.classList.toggle('muted', isMuted);
         var icon = volumeBtn.querySelector('i');
@@ -58,17 +41,8 @@
         }
     }
 
-    function attemptUnmute() {
-        if (soundUnlocked) return;
-        videoEl.muted = false;
-        var p = videoEl.play();
-        if (p) {
-            p.then(function() {
-                isMuted = false;
-                soundUnlocked = true;
-                updateVolumeIcon();
-            }).catch(function() {});
-        }
+    function advanceToNext() {
+        playVideo(pickNext());
     }
 
     function playVideo(idx) {
@@ -87,6 +61,7 @@
                 if (isTransitioning) {
                     if (transitionEl) transitionEl.classList.remove('active');
                     videoEl.classList.add('visible');
+                    videoEl.muted = true;
                     videoEl.play().catch(function() {});
                     currentIndex = idx;
                     isTransitioning = false;
@@ -131,80 +106,56 @@
         }, 60000);
     }
 
+    // The first video (bmw9.mp4) autoplays via HTML attributes.
+    // Show it, set currentIndex, and start the rotation timer.
+    videoEl.addEventListener('playing', function onFirstPlay() {
+        videoEl.removeEventListener('playing', onFirstPlay);
+        videoEl.classList.add('visible');
+        currentIndex = 0;
+        startPlaybackTimer();
+
+        // Try to unmute immediately (may be blocked by autoplay policy)
+        setTimeout(function() {
+            videoEl.muted = false;
+            var p = videoEl.play();
+            if (p) p.catch(function() {});
+        }, 300);
+    });
+
+    // Rotate to next when video ends
     videoEl.addEventListener('ended', function() {
         clearPlaybackTimer();
         advanceToNext();
     });
 
+    // Volume toggle
     volumeBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         isMuted = !isMuted;
         videoEl.muted = isMuted;
-        if (!isMuted) soundUnlocked = true;
         updateVolumeIcon();
     });
 
     // Unlock sound on first user interaction anywhere on the page
-    function unlockOnInteraction(e) {
-        if (e.target.closest('.hero-volume-btn')) return;
-        attemptUnmute();
-    }
-    document.addEventListener('click', unlockOnInteraction);
-    document.addEventListener('touchstart', unlockOnInteraction, { passive: true });
+    document.addEventListener('click', function tryUnmute() {
+        if (!isMuted) return;
+        videoEl.muted = false;
+        var p = videoEl.play();
+        if (p) {
+            p.then(function() {
+                isMuted = false;
+                updateVolumeIcon();
+            }).catch(function() {});
+        }
+    });
 
-    // Prevent default touch behaviors in the hero video area that could freeze the video
+    // Prevent default touch behaviors in the hero video area
+    var heroContainer = document.querySelector('.hero-video-container');
     if (heroContainer) {
         heroContainer.addEventListener('touchstart', function(e) {
             e.preventDefault();
         }, { passive: false });
     }
-
-    // Start: load first video (muted, sequential)
-    setTimeout(function() {
-        var idx = 0;
-        videoEl.muted = true;
-        videoEl.src = videoFiles[idx];
-        videoEl.load();
-
-        var tryPlay = function(attempts) {
-            attempts = attempts || 0;
-            videoEl.classList.add('visible');
-            videoEl.muted = true;
-            var p = videoEl.play();
-            if (p) {
-                p.then(function() {
-                    currentIndex = idx;
-                    startPlaybackTimer();
-                    attemptUnmute();
-                }).catch(function() {
-                    if (attempts < 5) {
-                        setTimeout(function() { tryPlay(attempts + 1); }, 500);
-                    }
-                });
-            }
-        };
-
-        var onCanPlay = function() {
-            videoEl.removeEventListener('canplay', onCanPlay);
-            tryPlay();
-        };
-
-        var onError = function() {
-            videoEl.removeEventListener('error', onError);
-            videoEl.removeEventListener('canplay', onCanPlay);
-            setTimeout(advanceToNext, 500);
-        };
-
-        videoEl.addEventListener('canplay', onCanPlay);
-        videoEl.addEventListener('error', onError);
-
-        setTimeout(function() {
-            if (currentIndex === -1) {
-                videoEl.removeEventListener('canplay', onCanPlay);
-                tryPlay();
-            }
-        }, 5000);
-    }, 500);
 })();
 
 // ===== MODAL =====
