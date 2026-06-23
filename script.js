@@ -497,9 +497,9 @@ document.querySelectorAll('.btn').forEach(function(btn) {
     }
 
     function playClick() {
-        playTone(1047, 0.06, 0.05);
-        playTone(784, 0.04, 0.07);
-        playTone(523, 0.025, 0.09);
+        playTone(1047, 0.072, 0.05);
+        playTone(784, 0.048, 0.07);
+        playTone(523, 0.03, 0.09);
     }
 
     document.addEventListener('click', function(e) {
@@ -516,8 +516,8 @@ document.querySelectorAll('.btn').forEach(function(btn) {
         var delta = Math.abs(window.scrollY - lastY);
         if (delta < 30) return;
         scrollTimeout = setTimeout(function() { scrollTimeout = null; }, 80);
-        var vol = Math.min(0.015, delta * 0.00006);
-        if (vol > 0.003) playTone(180 + delta * 0.25, vol, 0.05);
+        var vol = Math.min(0.018, delta * 0.000072);
+        if (vol > 0.0036) playTone(180 + delta * 0.25, vol, 0.05);
         lastY = window.scrollY;
     });
 })();
