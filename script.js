@@ -182,12 +182,7 @@
         document.body.style.overflow = '';
     }
 
-    // Use click for desktop, touchend for mobile (touchend is a valid user gesture on all browsers)
     splash.addEventListener('click', dismissSplash);
-    splash.addEventListener('touchend', function(e) {
-        e.preventDefault();
-        dismissSplash();
-    }, { passive: false });
 })();
 
 // ===== MODAL =====
