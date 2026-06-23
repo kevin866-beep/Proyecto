@@ -149,6 +149,11 @@
 
 })();
 
+// Prevent right-click / inspect
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+});
+
 // ===== SPLASH SCREEN =====
 (function() {
     var splash = document.getElementById('splash');
