@@ -166,21 +166,27 @@
         videoEl.src = videoFiles[idx];
         videoEl.load();
 
-        var onCanPlay = function() {
-            videoEl.removeEventListener('canplay', onCanPlay);
+        var tryPlay = function(attempts) {
+            attempts = attempts || 0;
             videoEl.classList.add('visible');
             videoEl.muted = true;
-            videoEl.play().then(function() {
-                // Playing successfully (muted). Now try to unmute immediately.
-                attemptUnmute();
-            }).catch(function() {
-                // Retry play once more
-                setTimeout(function() {
-                    videoEl.play().catch(function() {});
-                }, 300);
-            });
-            currentIndex = idx;
-            startPlaybackTimer();
+            var p = videoEl.play();
+            if (p) {
+                p.then(function() {
+                    currentIndex = idx;
+                    startPlaybackTimer();
+                    attemptUnmute();
+                }).catch(function() {
+                    if (attempts < 5) {
+                        setTimeout(function() { tryPlay(attempts + 1); }, 500);
+                    }
+                });
+            }
+        };
+
+        var onCanPlay = function() {
+            videoEl.removeEventListener('canplay', onCanPlay);
+            tryPlay();
         };
 
         var onError = function() {
@@ -195,13 +201,7 @@
         setTimeout(function() {
             if (currentIndex === -1) {
                 videoEl.removeEventListener('canplay', onCanPlay);
-                videoEl.classList.add('visible');
-                videoEl.muted = true;
-                videoEl.play().then(function() {
-                    attemptUnmute();
-                }).catch(function() {});
-                currentIndex = idx;
-                startPlaybackTimer();
+                tryPlay();
             }
         }, 5000);
     }, 500);
