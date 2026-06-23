@@ -1,15 +1,15 @@
 ﻿// ===== VIDEO BACKGROUND HERO =====
 (function() {
     var videoFiles = [
-        'videos/bmw9.mp4',
-        'videos/bmw8.mp4',
         'videos/bmw1.mp4',
         'videos/bmw2.mp4',
         'videos/bmw3.mp4',
         'videos/bmw4.mp4',
         'videos/bmw5.mp4',
         'videos/bmw6.mp4',
-        'videos/bmw7.mp4'
+        'videos/bmw7.mp4',
+        'videos/bmw8.mp4',
+        'videos/bmw9.mp4'
     ];
 
     var videoEl = document.getElementById('heroVideo');
