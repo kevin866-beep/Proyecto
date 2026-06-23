@@ -15,12 +15,14 @@
     var videoEl = document.getElementById('heroVideo');
     var volumeBtn = document.getElementById('volumeBtn');
     var transitionEl = document.getElementById('videoTransition');
+    var heroContainer = document.querySelector('.hero-video-container');
     if (!videoEl || !volumeBtn || videoFiles.length === 0) return;
 
-    var isMuted = false;
+    var isMuted = true;
     var currentIndex = -1;
     var isTransitioning = false;
     var playbackTimer = null;
+    var soundUnlocked = false;
 
     function preloadAll() {
         videoFiles.forEach(function(src) {
@@ -46,6 +48,27 @@
 
     function advanceToNext() {
         playVideo(pickNext());
+    }
+
+    function updateVolumeIcon() {
+        volumeBtn.classList.toggle('muted', isMuted);
+        var icon = volumeBtn.querySelector('i');
+        if (icon) {
+            icon.className = isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+        }
+    }
+
+    function attemptUnmute() {
+        if (soundUnlocked) return;
+        videoEl.muted = false;
+        var p = videoEl.play();
+        if (p) {
+            p.then(function() {
+                isMuted = false;
+                soundUnlocked = true;
+                updateVolumeIcon();
+            }).catch(function() {});
+        }
     }
 
     function playVideo(idx) {
@@ -76,6 +99,7 @@
                 clearTimeout(readyTimeout);
                 if (transitionEl) transitionEl.classList.remove('active');
                 videoEl.classList.add('visible');
+                videoEl.muted = isMuted;
                 videoEl.play().catch(function() {
                     videoEl.muted = true;
                     videoEl.play().catch(function() {});
@@ -112,62 +136,48 @@
         advanceToNext();
     });
 
-    volumeBtn.addEventListener('click', function() {
+    volumeBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
         isMuted = !isMuted;
         videoEl.muted = isMuted;
-        volumeBtn.classList.toggle('muted', isMuted);
-        var icon = volumeBtn.querySelector('i');
-        if (icon) {
-            icon.className = isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
-        }
+        if (!isMuted) soundUnlocked = true;
+        updateVolumeIcon();
     });
 
-    // Prevent touch/click from pausing or affecting the video
-    videoEl.addEventListener('touchstart', function(e) { e.preventDefault(); }, { passive: false });
-    videoEl.addEventListener('touchend', function(e) { e.preventDefault(); }, { passive: false });
-    videoEl.addEventListener('touchmove', function(e) { e.preventDefault(); }, { passive: false });
-    videoEl.addEventListener('click', function(e) { e.preventDefault(); });
+    // Unlock sound on first user interaction anywhere on the page
+    function unlockOnInteraction(e) {
+        if (e.target.closest('.hero-volume-btn')) return;
+        attemptUnmute();
+    }
+    document.addEventListener('click', unlockOnInteraction);
+    document.addEventListener('touchstart', unlockOnInteraction, { passive: true });
 
-    // Remove native controls context menu
-    videoEl.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+    // Prevent default touch behaviors in the hero video area that could freeze the video
+    if (heroContainer) {
+        heroContainer.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+    }
 
-    // Start: load first video sequentially with sound (browser autoplay policy permitting)
+    // Start: load first video (muted, sequential)
     setTimeout(function() {
         var idx = 0;
-        videoEl.muted = false;
-        isMuted = false;
+        videoEl.muted = true;
         videoEl.src = videoFiles[idx];
         videoEl.load();
 
         var onCanPlay = function() {
             videoEl.removeEventListener('canplay', onCanPlay);
             videoEl.classList.add('visible');
-            videoEl.play().catch(function() {
-                // If autoplay blocked, play muted but queue an immediate unmute attempt
-                videoEl.muted = true;
-                isMuted = true;
-                volumeBtn.classList.add('muted');
-                var icon = volumeBtn.querySelector('i');
-                if (icon) icon.className = 'fas fa-volume-mute';
-
-                // Retry unmute in a loop for a few seconds (some browsers allow after page is "active")
-                var retries = 0;
-                var retryUnmute = function() {
-                    if (retries > 10) return;
-                    retries++;
-                    videoEl.muted = false;
-                    var p = videoEl.play();
-                    if (p) {
-                        p.then(function() {
-                            isMuted = false;
-                            volumeBtn.classList.remove('muted');
-                            if (icon) icon.className = 'fas fa-volume-up';
-                        }).catch(function() {
-                            setTimeout(retryUnmute, 500);
-                        });
-                    }
-                };
-                setTimeout(retryUnmute, 1000);
+            videoEl.muted = true;
+            videoEl.play().then(function() {
+                // Playing successfully (muted). Now try to unmute immediately.
+                attemptUnmute();
+            }).catch(function() {
+                // Retry play once more
+                setTimeout(function() {
+                    videoEl.play().catch(function() {});
+                }, 300);
             });
             currentIndex = idx;
             startPlaybackTimer();
@@ -186,12 +196,15 @@
             if (currentIndex === -1) {
                 videoEl.removeEventListener('canplay', onCanPlay);
                 videoEl.classList.add('visible');
-                videoEl.play().catch(function() {});
+                videoEl.muted = true;
+                videoEl.play().then(function() {
+                    attemptUnmute();
+                }).catch(function() {});
                 currentIndex = idx;
                 startPlaybackTimer();
             }
         }, 5000);
-    }, 1000);
+    }, 500);
 })();
 
 // ===== MODAL =====

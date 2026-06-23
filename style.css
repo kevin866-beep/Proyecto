@@ -294,6 +294,7 @@ body {
     z-index: 0;
     overflow: hidden;
     background: #000;
+    touch-action: none;
 }
 
 .hero-video {
