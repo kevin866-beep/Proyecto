@@ -330,30 +330,61 @@ window.addEventListener('scroll', function() {
 (function() {
     var toggle = document.getElementById('navToggle');
     var menu = document.getElementById('navLinks');
+    var overlay = document.getElementById('navOverlay');
     if (!toggle || !menu) return;
 
-    toggle.addEventListener('click', function() {
-        toggle.classList.toggle('active');
-        menu.classList.toggle('open');
-        document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+    function openMenu() {
+        toggle.classList.add('active');
+        menu.classList.add('open');
+        if (overlay) overlay.classList.add('visible');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+        toggle.classList.remove('active');
+        menu.classList.remove('open');
+        if (overlay) overlay.classList.remove('visible');
+        document.body.style.overflow = '';
+    }
+
+    toggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (menu.classList.contains('open')) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
     });
+
+    toggle.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        if (menu.classList.contains('open')) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    }, { passive: false });
 
     // Close menu on link click
     menu.querySelectorAll('a').forEach(function(link) {
-        link.addEventListener('click', function() {
-            toggle.classList.remove('active');
-            menu.classList.remove('open');
-            document.body.style.overflow = '';
-        });
+        link.addEventListener('click', closeMenu);
+        link.addEventListener('touchstart', function(e) {
+            closeMenu();
+        }, { passive: true });
     });
 
-    // Close menu on click outside
-    document.addEventListener('click', function(e) {
-        if (!menu.classList.contains('open')) return;
-        if (!menu.contains(e.target) && !toggle.contains(e.target)) {
-            toggle.classList.remove('active');
-            menu.classList.remove('open');
-            document.body.style.overflow = '';
+    // Close menu on overlay click/touch
+    if (overlay) {
+        overlay.addEventListener('click', closeMenu);
+        overlay.addEventListener('touchstart', function(e) {
+            closeMenu();
+        }, { passive: true });
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && menu.classList.contains('open')) {
+            closeMenu();
         }
     });
 })();

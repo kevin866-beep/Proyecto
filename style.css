@@ -182,48 +182,76 @@ body {
 
 .nav-toggle {
     display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    cursor: pointer;
+    flex-shrink: 0;
+    z-index: 2000;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.nav-toggle .nav-toggle-icon {
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 36px;
-    height: 36px;
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 6px;
-    cursor: pointer;
-    gap: 4px;
-    padding: 0;
-    z-index: 1001;
-    position: relative;
+    gap: 5px;
+    width: 22px;
+    height: 18px;
 }
 
-.nav-toggle span {
+.nav-toggle .nav-toggle-icon span {
     display: block;
-    width: 18px;
-    height: 2px;
-    background: rgba(255,255,255,0.85);
+    width: 22px;
+    height: 2.5px;
+    background: rgba(255,255,255,0.9);
     border-radius: 2px;
     transition: transform 0.3s ease, opacity 0.3s ease;
+    flex-shrink: 0;
 }
 
-.nav-toggle.active span:nth-child(1) {
-    transform: translateY(6px) rotate(45deg);
+.nav-toggle.active .nav-toggle-icon span:nth-child(1) {
+    transform: translateY(7.5px) rotate(45deg);
 }
 
-.nav-toggle.active span:nth-child(2) {
+.nav-toggle.active .nav-toggle-icon span:nth-child(2) {
     opacity: 0;
 }
 
-.nav-toggle.active span:nth-child(3) {
-    transform: translateY(-6px) rotate(-45deg);
+.nav-toggle.active .nav-toggle-icon span:nth-child(3) {
+    transform: translateY(-7.5px) rotate(-45deg);
 }
 
 .navbar.light .nav-toggle {
-    border-color: rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0.05);
+    border-color: rgba(0,0,0,0.15);
 }
 
-.navbar.light .nav-toggle span {
+.navbar.light .nav-toggle .nav-toggle-icon span {
     background: var(--text-primary);
+}
+
+/* Mobile overlay backdrop */
+.nav-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.nav-overlay.visible {
+    opacity: 1;
 }
 
 @media (max-width: 768px) {
@@ -243,11 +271,12 @@ body {
         flex-direction: column;
         justify-content: flex-start;
         padding: 80px 2rem 2rem;
-        gap: 0.5rem;
+        gap: 0;
         transition: right 0.35s cubic-bezier(0.25,0.1,0.25,1);
         z-index: 1000;
         overflow-y: auto;
         display: flex;
+        box-shadow: -4px 0 30px rgba(0,0,0,0.5);
     }
 
     .nav-links.open {
@@ -257,21 +286,37 @@ body {
     .nav-links li {
         width: 100%;
         height: auto;
-        border-bottom: 1px solid rgba(255,255,255,0.06);
     }
 
     .nav-links a {
         font-size: 1rem;
-        padding: 0.9rem 0;
+        padding: 1rem 0;
         display: block;
         width: 100%;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+    }
+
+    .nav-links.open {
+        right: 0;
+    }
+
+    .nav-overlay {
+        display: block;
+        pointer-events: none;
+    }
+
+    .nav-overlay.visible {
+        pointer-events: auto;
     }
 
     .navbar.light .nav-links {
         background: rgba(255,255,255,0.97);
     }
 
-    .navbar.light .nav-links li {
+    .navbar.light .nav-links a {
+        color: rgba(0,0,0,0.75);
         border-bottom-color: rgba(0,0,0,0.06);
     }
 }
