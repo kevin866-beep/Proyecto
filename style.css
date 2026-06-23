@@ -390,7 +390,7 @@ body {
     z-index: 0;
     overflow: hidden;
     background: #000;
-    touch-action: none;
+    touch-action: manipulation;
 }
 
 .hero-video {

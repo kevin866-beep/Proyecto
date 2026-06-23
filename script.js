@@ -142,13 +142,6 @@
         updateVolumeIcon();
     });
 
-    // Prevent default touch behaviors in the hero video area
-    var heroContainer = document.querySelector('.hero-video-container');
-    if (heroContainer) {
-        heroContainer.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-        }, { passive: false });
-    }
 })();
 
 // ===== SPLASH SCREEN =====
@@ -156,7 +149,12 @@
     var splash = document.getElementById('splash');
     if (!splash) return;
 
+    var dismissed = false;
+
     function dismissSplash() {
+        if (dismissed) return;
+        dismissed = true;
+
         splash.classList.add('hidden');
         setTimeout(function() {
             splash.style.display = 'none';
@@ -168,7 +166,12 @@
         if (videoEl) {
             videoEl.muted = false;
             videoEl.classList.add('visible');
-            videoEl.play().catch(function() {});
+            videoEl.play().catch(function() {
+                // Retry once in case the gesture wasn't registered yet
+                setTimeout(function() {
+                    videoEl.play().catch(function() {});
+                }, 200);
+            });
         }
         if (volumeBtn) {
             volumeBtn.classList.remove('muted');
@@ -179,8 +182,9 @@
         document.body.style.overflow = '';
     }
 
+    // Use click for desktop, touchend for mobile (touchend is a valid user gesture on all browsers)
     splash.addEventListener('click', dismissSplash);
-    splash.addEventListener('touchstart', function(e) {
+    splash.addEventListener('touchend', function(e) {
         e.preventDefault();
         dismissSplash();
     }, { passive: false });
