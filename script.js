@@ -106,20 +106,14 @@
         }, 60000);
     }
 
-    // The first video (bmw9.mp4) autoplays via HTML attributes.
+    // The first video autoplays via HTML attributes (muted).
     // Show it, set currentIndex, and start the rotation timer.
+    // Sound will be unlocked when user dismisses the splash screen.
     videoEl.addEventListener('playing', function onFirstPlay() {
         videoEl.removeEventListener('playing', onFirstPlay);
         videoEl.classList.add('visible');
         currentIndex = 0;
         startPlaybackTimer();
-
-        // Try to unmute immediately (may be blocked by autoplay policy)
-        setTimeout(function() {
-            videoEl.muted = false;
-            var p = videoEl.play();
-            if (p) p.catch(function() {});
-        }, 300);
     });
 
     // Rotate to next when video ends
@@ -136,19 +130,6 @@
         updateVolumeIcon();
     });
 
-    // Unlock sound on first user interaction anywhere on the page
-    document.addEventListener('click', function tryUnmute() {
-        if (!isMuted) return;
-        videoEl.muted = false;
-        var p = videoEl.play();
-        if (p) {
-            p.then(function() {
-                isMuted = false;
-                updateVolumeIcon();
-            }).catch(function() {});
-        }
-    });
-
     // Prevent default touch behaviors in the hero video area
     var heroContainer = document.querySelector('.hero-video-container');
     if (heroContainer) {
@@ -156,6 +137,40 @@
             e.preventDefault();
         }, { passive: false });
     }
+})();
+
+// ===== SPLASH SCREEN =====
+(function() {
+    var splash = document.getElementById('splash');
+    if (!splash) return;
+
+    function dismissSplash() {
+        splash.classList.add('hidden');
+        setTimeout(function() {
+            splash.style.display = 'none';
+        }, 600);
+
+        // Now we have user gesture, unmute the video
+        var videoEl = document.getElementById('heroVideo');
+        var volumeBtn = document.getElementById('volumeBtn');
+        if (videoEl) {
+            videoEl.muted = false;
+            videoEl.play().catch(function() {});
+        }
+        if (volumeBtn) {
+            volumeBtn.classList.remove('muted');
+            var icon = volumeBtn.querySelector('i');
+            if (icon) icon.className = 'fas fa-volume-up';
+        }
+
+        document.body.style.overflow = '';
+    }
+
+    splash.addEventListener('click', dismissSplash);
+    splash.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        dismissSplash();
+    }, { passive: false });
 })();
 
 // ===== MODAL =====
