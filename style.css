@@ -213,6 +213,9 @@ body {
     opacity: 0;
     transition: opacity 0.8s ease, filter 0.8s ease;
     filter: blur(4px);
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .hero-video.visible {

@@ -22,7 +22,6 @@
     var isTransitioning = false;
     var playbackTimer = null;
 
-    // Preload all videos via cache hints
     function preloadAll() {
         videoFiles.forEach(function(src) {
             var link = document.createElement('link');
@@ -34,12 +33,8 @@
     }
     preloadAll();
 
-    function pickRandom() {
-        var idx;
-        do {
-            idx = Math.floor(Math.random() * videoFiles.length);
-        } while (idx === currentIndex && videoFiles.length > 1);
-        return idx;
+    function pickNext() {
+        return (currentIndex + 1) % videoFiles.length;
     }
 
     function clearPlaybackTimer() {
@@ -50,25 +45,22 @@
     }
 
     function advanceToNext() {
-        var next = pickRandom();
-        playVideo(next, isMuted);
+        playVideo(pickNext());
     }
 
-    function playVideo(idx, startMuted) {
+    function playVideo(idx) {
         if (isTransitioning) return;
         isTransitioning = true;
         clearPlaybackTimer();
 
-        // Black overlay in
         if (transitionEl) transitionEl.classList.add('active');
 
         setTimeout(function() {
             videoEl.classList.remove('visible', 'fading');
             videoEl.src = videoFiles[idx];
-            videoEl.muted = startMuted !== undefined ? startMuted : isMuted;
+            videoEl.muted = isMuted;
 
             var readyTimeout = setTimeout(function() {
-                // Force play if canplay takes too long
                 if (isTransitioning) {
                     if (transitionEl) transitionEl.classList.remove('active');
                     videoEl.classList.add('visible');
@@ -99,7 +91,6 @@
                 clearTimeout(readyTimeout);
                 if (transitionEl) transitionEl.classList.remove('active');
                 isTransitioning = false;
-                // Skip to next video
                 setTimeout(advanceToNext, 500);
             };
 
@@ -111,19 +102,16 @@
 
     function startPlaybackTimer() {
         clearPlaybackTimer();
-        // Safety timer: advance after 60s if ended doesn't fire
         playbackTimer = setTimeout(function() {
             advanceToNext();
         }, 60000);
     }
 
-    // When video ends, auto-advance
     videoEl.addEventListener('ended', function() {
         clearPlaybackTimer();
         advanceToNext();
     });
 
-    // Volume toggle
     volumeBtn.addEventListener('click', function() {
         isMuted = !isMuted;
         videoEl.muted = isMuted;
@@ -134,10 +122,18 @@
         }
     });
 
-    // Start: 1 second delay, random video, unmuted
-    // Use playVideo but handle autoplay policy gracefully
+    // Prevent touch/click from pausing or affecting the video
+    videoEl.addEventListener('touchstart', function(e) { e.preventDefault(); }, { passive: false });
+    videoEl.addEventListener('touchend', function(e) { e.preventDefault(); }, { passive: false });
+    videoEl.addEventListener('touchmove', function(e) { e.preventDefault(); }, { passive: false });
+    videoEl.addEventListener('click', function(e) { e.preventDefault(); });
+
+    // Remove native controls context menu
+    videoEl.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+
+    // Start: load first video sequentially with sound (browser autoplay policy permitting)
     setTimeout(function() {
-        var idx = pickRandom();
+        var idx = 0;
         videoEl.muted = false;
         isMuted = false;
         videoEl.src = videoFiles[idx];
@@ -147,27 +143,31 @@
             videoEl.removeEventListener('canplay', onCanPlay);
             videoEl.classList.add('visible');
             videoEl.play().catch(function() {
-                // If autoplay blocked by policy, fall back to muted
+                // If autoplay blocked, play muted but queue an immediate unmute attempt
                 videoEl.muted = true;
                 isMuted = true;
                 volumeBtn.classList.add('muted');
                 var icon = volumeBtn.querySelector('i');
                 if (icon) icon.className = 'fas fa-volume-mute';
-                videoEl.play().catch(function() {});
 
-                // On first user click anywhere, unmute
-                var unmuteOnInteraction = function() {
+                // Retry unmute in a loop for a few seconds (some browsers allow after page is "active")
+                var retries = 0;
+                var retryUnmute = function() {
+                    if (retries > 10) return;
+                    retries++;
                     videoEl.muted = false;
-                    isMuted = false;
-                    volumeBtn.classList.remove('muted');
-                    var icon = volumeBtn.querySelector('i');
-                    if (icon) icon.className = 'fas fa-volume-up';
-                    videoEl.play().catch(function() {});
-                    document.removeEventListener('click', unmuteOnInteraction);
-                    document.removeEventListener('touchstart', unmuteOnInteraction);
+                    var p = videoEl.play();
+                    if (p) {
+                        p.then(function() {
+                            isMuted = false;
+                            volumeBtn.classList.remove('muted');
+                            if (icon) icon.className = 'fas fa-volume-up';
+                        }).catch(function() {
+                            setTimeout(retryUnmute, 500);
+                        });
+                    }
                 };
-                document.addEventListener('click', unmuteOnInteraction);
-                document.addEventListener('touchstart', unmuteOnInteraction);
+                setTimeout(retryUnmute, 1000);
             });
             currentIndex = idx;
             startPlaybackTimer();
@@ -176,14 +176,12 @@
         var onError = function() {
             videoEl.removeEventListener('error', onError);
             videoEl.removeEventListener('canplay', onCanPlay);
-            // Retry with next video on error
             setTimeout(advanceToNext, 500);
         };
 
         videoEl.addEventListener('canplay', onCanPlay);
         videoEl.addEventListener('error', onError);
 
-        // Fallback if canplay never fires
         setTimeout(function() {
             if (currentIndex === -1) {
                 videoEl.removeEventListener('canplay', onCanPlay);
