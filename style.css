@@ -202,14 +202,14 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 5px;
-    width: 22px;
-    height: 18px;
+    gap: 7px;
+    width: 24px;
+    height: 22px;
 }
 
 .nav-toggle .nav-toggle-icon span {
     display: block;
-    width: 22px;
+    width: 24px;
     height: 2.5px;
     background: rgba(255,255,255,0.9);
     border-radius: 2px;
@@ -218,7 +218,7 @@ body {
 }
 
 .nav-toggle.active .nav-toggle-icon span:nth-child(1) {
-    transform: translateY(7.5px) rotate(45deg);
+    transform: translateY(9.5px) rotate(45deg);
 }
 
 .nav-toggle.active .nav-toggle-icon span:nth-child(2) {
@@ -226,7 +226,7 @@ body {
 }
 
 .nav-toggle.active .nav-toggle-icon span:nth-child(3) {
-    transform: translateY(-7.5px) rotate(-45deg);
+    transform: translateY(-9.5px) rotate(-45deg);
 }
 
 .navbar.light .nav-toggle {
