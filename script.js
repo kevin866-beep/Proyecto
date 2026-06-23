@@ -313,6 +313,38 @@ window.addEventListener('scroll', function() {
     });
 });
 
+// ===== MOBILE NAV TOGGLE =====
+(function() {
+    var toggle = document.getElementById('navToggle');
+    var menu = document.getElementById('navLinks');
+    if (!toggle || !menu) return;
+
+    toggle.addEventListener('click', function() {
+        toggle.classList.toggle('active');
+        menu.classList.toggle('open');
+        document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+    });
+
+    // Close menu on link click
+    menu.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', function() {
+            toggle.classList.remove('active');
+            menu.classList.remove('open');
+            document.body.style.overflow = '';
+        });
+    });
+
+    // Close menu on click outside
+    document.addEventListener('click', function(e) {
+        if (!menu.classList.contains('open')) return;
+        if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+            toggle.classList.remove('active');
+            menu.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+    });
+})();
+
 // ===== RIPPLE EFFECT =====
 document.querySelectorAll('.btn').forEach(function(btn) {
     btn.addEventListener('click', function(e) {
