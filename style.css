@@ -1821,35 +1821,6 @@ body {
 }
 
 /* ===== DECORATIVE GLITTER RING ===== */
-.hero-glitter-ring {
-    position: absolute;
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    border: 1px solid rgba(200,202,214,0.15);
-    background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.08) 0%, transparent 40%),
-                radial-gradient(circle at 70% 60%, rgba(255,255,255,0.06) 0%, transparent 40%),
-                radial-gradient(circle at 50% 80%, rgba(255,255,255,0.05) 0%, transparent 30%);
-    animation: ringGlitter 4s ease-in-out infinite;
-    mix-blend-mode: overlay;
-}
-
-@keyframes ringGlitter {
-    0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); opacity: 0.3; }
-    25% { transform: translate(-50%, -50%) rotate(90deg) scale(1.08); opacity: 0.6; }
-    50% { transform: translate(-50%, -50%) rotate(180deg) scale(0.95); opacity: 0.4; }
-    75% { transform: translate(-50%, -50%) rotate(270deg) scale(1.05); opacity: 0.7; }
-    100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); opacity: 0.3; }
-}
-
-@media (max-width: 768px) {
-    .hero-glitter-ring { width: 100px; height: 100px; }
-}
-
 .hero-eyebrow {
     background: linear-gradient(135deg, #a8aab6, #d0d2dc, #a8aab6, #d0d2dc, #a8aab6);
     background-size: 300% 300%;
