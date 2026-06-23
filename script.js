@@ -437,20 +437,20 @@ document.querySelectorAll('.btn').forEach(function(btn) {
         }
     }
 
-    // Desktop: move → scatter
+    // Desktop: move -> scatter
     document.addEventListener('mousemove', function(e) {
         if (moveThrottle) return;
         moveThrottle = setTimeout(function() { moveThrottle = null; }, 40);
         spawnScatter(e.clientX, e.clientY);
     });
 
-    // Desktop/click → burst (skip if already handled by touchstart)
+    // Desktop/click -> burst (skip if already handled by touchstart)
     document.addEventListener('click', function(e) {
         if (wasTouch) { wasTouch = false; return; }
         spawnBurst(e.clientX, e.clientY);
     });
 
-    // Mobile: drag → scatter
+    // Mobile: drag -> scatter
     document.addEventListener('touchmove', function(e) {
         if (moveThrottle) return;
         moveThrottle = setTimeout(function() { moveThrottle = null; }, 40);
@@ -460,7 +460,7 @@ document.querySelectorAll('.btn').forEach(function(btn) {
         }
     });
 
-    // Mobile: tap → burst
+    // Mobile: tap -> burst
     document.addEventListener('touchstart', function(e) {
         wasTouch = true;
         setTimeout(function() { wasTouch = false; }, 400);
@@ -471,7 +471,7 @@ document.querySelectorAll('.btn').forEach(function(btn) {
     });
 })();
 
-// ===== AUDIO CLICK =====
+// ===== AUDIO INTERACTION =====
 (function() {
     var audioCtx;
 
@@ -480,14 +480,14 @@ document.querySelectorAll('.btn').forEach(function(btn) {
         return audioCtx;
     }
 
-    function play(vol, freq, dur) {
+    function playTone(freq, vol, dur, type) {
         try {
             var ctx = getCtx();
             var osc = ctx.createOscillator();
             var gain = ctx.createGain();
             osc.connect(gain);
             gain.connect(ctx.destination);
-            osc.type = 'sine';
+            osc.type = type || 'sine';
             osc.frequency.setValueAtTime(freq, ctx.currentTime);
             gain.gain.setValueAtTime(vol, ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
@@ -496,9 +496,16 @@ document.querySelectorAll('.btn').forEach(function(btn) {
         } catch (e) {}
     }
 
+    function playClick() {
+        playTone(1047, 0.06, 0.05);
+        playTone(784, 0.04, 0.07);
+        playTone(523, 0.025, 0.09);
+    }
+
     document.addEventListener('click', function(e) {
-        var vol = Math.min(0.06, 0.02 + Math.random() * 0.03);
-        play(vol, 600 + Math.random() * 400, 0.04 + Math.random() * 0.03);
+        if (e.target.closest('button, .btn, a, .nav-toggle, .carousel-arrow, #volumeBtn')) {
+            playClick();
+        }
     });
 
     var lastY = window.scrollY;
@@ -509,12 +516,14 @@ document.querySelectorAll('.btn').forEach(function(btn) {
         var delta = Math.abs(window.scrollY - lastY);
         if (delta < 30) return;
         scrollTimeout = setTimeout(function() { scrollTimeout = null; }, 80);
-        var vol = Math.min(0.025, delta * 0.0001);
-        if (vol > 0.005) play(vol, 200 + delta * 0.5, 0.06);
+        var vol = Math.min(0.015, delta * 0.00006);
+        if (vol > 0.003) playTone(180 + delta * 0.25, vol, 0.05);
         lastY = window.scrollY;
     });
+})();
 
-    // Carousel navigation
+// ===== CAROUSEL NAVIGATION =====
+(function() {
     var carousel = document.getElementById('colorsCarousel');
     var prevBtn = document.getElementById('carouselPrev');
     var nextBtn = document.getElementById('carouselNext');
@@ -669,4 +678,3 @@ document.querySelectorAll('.btn').forEach(function(btn) {
 
     draw();
 })();
-
